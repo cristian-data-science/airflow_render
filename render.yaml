@@ -82,7 +82,6 @@ services:
         value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
 
   - name: airflow-redis
-    type: privateService
     env: docker
     dockerfilePath: ./redis/Dockerfile
     plan: starter
