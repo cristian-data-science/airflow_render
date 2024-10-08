@@ -19,7 +19,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: airflow-redis
-          property: connectionString
+          property: REDIS_URL
     startCommand: >
       sh -c "airflow db upgrade &&
              airflow users create --username \$AIRFLOW_ADMIN_USER --password \$AIRFLOW_ADMIN_PASSWORD --firstname Admin --lastname User --role Admin --email admin@example.com &&
@@ -41,7 +41,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: airflow-redis
-          property: connectionString
+          property: REDIS_URL
     startCommand: "airflow scheduler"
 
   - name: airflow-worker
@@ -60,7 +60,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: airflow-redis
-          property: connectionString
+          property: REDIS_URL
     startCommand: "airflow celery worker"
 
   - name: airflow-redis
@@ -69,5 +69,5 @@ services:
 
 databases:
   - name: airflow-db
-    databaseFlavor: postgres
+    databaseType: postgres
     plan: starter
