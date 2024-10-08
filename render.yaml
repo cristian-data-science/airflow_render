@@ -13,35 +13,28 @@ services:
       - key: AIRFLOW_ADMIN_PASSWORD
         sync: false
       - key: AIRFLOW_COMMAND
-        value: "airflow webserver"
+        value: "airflow webserver --port $PORT"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
-          property: connectionString
+          property: internalConnectionString
       - key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
-          property: connectionString
-      - key: REDIS_HOST
-        fromService:
-          name: airflow-redis
-          type: privateService
-          property: host
-      - key: REDIS_PORT
-        fromService:
-          name: airflow-redis
-          type: privateService
-          property: port
+          property: internalConnectionString
       - key: REDIS_URL
-        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
+        fromService:
+          name: airflow-redis
+          type: redis
+          property: connectionString
 
   - name: airflow-scheduler
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter  # Puedes usar "free" si lo prefieres
+    plan: starter
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -73,7 +66,7 @@ services:
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter  # Puedes usar "free" si lo prefieres
+    plan: starter
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -106,6 +99,8 @@ services:
     env: docker
     dockerfilePath: ./redis/Dockerfile
     plan: starter  # Puedes usar "free" si lo prefieres
+    ipAllowList:
+      - source: 0.0.0.0/0
 
 databases:
   - name: airflow-db
