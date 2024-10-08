@@ -3,9 +3,15 @@ services:
     type: web
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: free
+    plan: starter
     autoDeploy: true
     envVars:
+      - key: AIRFLOW__CORE__FERNET_KEY
+        sync: false
+      - key: AIRFLOW_ADMIN_USER
+        sync: false
+      - key: AIRFLOW_ADMIN_PASSWORD
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: airflow-db
@@ -13,13 +19,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: airflow-redis
-          property: connectionString
-      - key: AIRFLOW__CORE__FERNET_KEY
-        sync: false
-      - key: AIRFLOW_ADMIN_USER
-        sync: false
-      - key: AIRFLOW_ADMIN_PASSWORD
-        sync: false
+          property: REDIS_URL
     startCommand: >
       sh -c "airflow db upgrade &&
              airflow users create --username \$AIRFLOW_ADMIN_USER --password \$AIRFLOW_ADMIN_PASSWORD --firstname Admin --lastname User --role Admin --email admin@example.com &&
@@ -29,9 +29,11 @@ services:
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: free
+    plan: starter
     autoDeploy: true
     envVars:
+      - key: AIRFLOW__CORE__FERNET_KEY
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: airflow-db
@@ -39,18 +41,18 @@ services:
       - key: REDIS_URL
         fromService:
           name: airflow-redis
-          property: connectionString
-      - key: AIRFLOW__CORE__FERNET_KEY
-        sync: false
+          property: REDIS_URL
     startCommand: "airflow scheduler"
 
   - name: airflow-worker
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: free
+    plan: starter
     autoDeploy: true
     envVars:
+      - key: AIRFLOW__CORE__FERNET_KEY
+        sync: false
       - key: DATABASE_URL
         fromDatabase:
           name: airflow-db
@@ -58,17 +60,15 @@ services:
       - key: REDIS_URL
         fromService:
           name: airflow-redis
-          property: connectionString
-      - key: AIRFLOW__CORE__FERNET_KEY
-        sync: false
+          property: REDIS_URL
     startCommand: "airflow celery worker"
 
 databases:
   - name: airflow-db
-    engine: postgres
-    version: 13
+    databaseFlavor: postgres
     plan: starter
 
-redis:
+services:
   - name: airflow-redis
-    plan: free
+    type: redis
+    plan: starter
