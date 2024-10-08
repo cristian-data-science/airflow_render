@@ -13,7 +13,7 @@ services:
       - key: AIRFLOW_ADMIN_PASSWORD
         sync: false
       - key: AIRFLOW_COMMAND
-        value: "airflow webserver --port \$PORT"
+        value: "airflow webserver --port $PORT"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
