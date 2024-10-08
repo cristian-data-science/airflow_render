@@ -16,14 +16,18 @@ services:
         fromDatabase:
           name: airflow-db
           property: connectionString
-      - key: REDIS_URL
+      - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          property: REDIS_URL
-    startCommand: >
-      sh -c "airflow db upgrade &&
-             airflow users create --username \$AIRFLOW_ADMIN_USER --password \$AIRFLOW_ADMIN_PASSWORD --firstname Admin --lastname User --role Admin --email admin@example.com &&
-             airflow webserver"
+          type: privateService
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: airflow-redis
+          type: privateService
+          property: port
+      - key: REDIS_URL
+        value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
 
   - name: airflow-scheduler
     type: worker
@@ -38,11 +42,18 @@ services:
         fromDatabase:
           name: airflow-db
           property: connectionString
-      - key: REDIS_URL
+      - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          property: REDIS_URL
-    startCommand: "airflow scheduler"
+          type: privateService
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: airflow-redis
+          type: privateService
+          property: port
+      - key: REDIS_URL
+        value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
 
   - name: airflow-worker
     type: worker
@@ -57,14 +68,23 @@ services:
         fromDatabase:
           name: airflow-db
           property: connectionString
-      - key: REDIS_URL
+      - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          property: REDIS_URL
-    startCommand: "airflow celery worker"
+          type: privateService
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: airflow-redis
+          type: privateService
+          property: port
+      - key: REDIS_URL
+        value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
 
   - name: airflow-redis
-    type: redis
+    type: privateService
+    env: docker
+    dockerfilePath: ./redis/Dockerfile
     plan: starter
 
 databases:
