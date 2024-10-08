@@ -19,12 +19,12 @@ services:
       - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          type: privateService
+          type: pserv
           property: host
       - key: REDIS_PORT
         fromService:
           name: airflow-redis
-          type: privateService
+          type: pserv
           property: port
       - key: REDIS_URL
         value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
@@ -45,12 +45,12 @@ services:
       - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          type: privateService
+          type: pserv
           property: host
       - key: REDIS_PORT
         fromService:
           name: airflow-redis
-          type: privateService
+          type: pserv
           property: port
       - key: REDIS_URL
         value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
@@ -71,17 +71,18 @@ services:
       - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          type: privateService
+          type: pserv
           property: host
       - key: REDIS_PORT
         fromService:
           name: airflow-redis
-          type: privateService
+          type: pserv
           property: port
       - key: REDIS_URL
         value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
 
   - name: airflow-redis
+    type: pserv
     env: docker
     dockerfilePath: ./redis/Dockerfile
     plan: starter
