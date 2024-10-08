@@ -15,9 +15,8 @@ ENTRYPOINT ["/entrypoint"]
 
 # Comando de inicio con depuración
 CMD ["bash", "-c", "\
-    echo 'AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ' $AIRFLOW__DATABASE__SQL_ALCHEMY_CONN; \
     echo 'AIRFLOW__CORE__SQL_ALCHEMY_CONN: ' $AIRFLOW__CORE__SQL_ALCHEMY_CONN; \
-    echo 'DATABASE_URL: ' $DATABASE_URL; \
+    echo 'AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ' $AIRFLOW__DATABASE__SQL_ALCHEMY_CONN; \
     airflow db upgrade && \
     airflow users create \
         --username \"$AIRFLOW_ADMIN_USER\" \
