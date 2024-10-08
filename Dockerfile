@@ -12,3 +12,6 @@ WORKDIR /opt/airflow
 
 # Usar el punto de entrada predeterminado de Airflow
 ENTRYPOINT ["/entrypoint"]
+
+# Agregar el comando predeterminado
+CMD ["bash", "-c", "exec $AIRFLOW_COMMAND"]
