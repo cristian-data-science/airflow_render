@@ -3,7 +3,7 @@ services:
     type: web
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: starter  # Puedes usar "free" si lo prefieres
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -12,10 +12,16 @@ services:
         sync: false
       - key: AIRFLOW_ADMIN_PASSWORD
         sync: false
+      - key: AIRFLOW_COMMAND
+        value: "airflow webserver"
+      - key: AIRFLOW__CORE__EXECUTOR
+        value: "CeleryExecutor"
       - key: DATABASE_URL
         fromDatabase:
           name: airflow-db
           property: connectionString
+      - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+        value: ${DATABASE_URL}
       - key: REDIS_HOST
         fromService:
           name: airflow-redis
@@ -27,21 +33,27 @@ services:
           type: pserv
           property: port
       - key: REDIS_URL
-        value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
+        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-scheduler
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: starter  # Puedes usar "free" si lo prefieres
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
         sync: false
+      - key: AIRFLOW_COMMAND
+        value: "airflow scheduler"
+      - key: AIRFLOW__CORE__EXECUTOR
+        value: "CeleryExecutor"
       - key: DATABASE_URL
         fromDatabase:
           name: airflow-db
           property: connectionString
+      - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+        value: ${DATABASE_URL}
       - key: REDIS_HOST
         fromService:
           name: airflow-redis
@@ -53,21 +65,27 @@ services:
           type: pserv
           property: port
       - key: REDIS_URL
-        value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
+        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-worker
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: starter  # Puedes usar "free" si lo prefieres
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
         sync: false
+      - key: AIRFLOW_COMMAND
+        value: "airflow celery worker"
+      - key: AIRFLOW__CORE__EXECUTOR
+        value: "CeleryExecutor"
       - key: DATABASE_URL
         fromDatabase:
           name: airflow-db
           property: connectionString
+      - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+        value: ${DATABASE_URL}
       - key: REDIS_HOST
         fromService:
           name: airflow-redis
@@ -79,14 +97,15 @@ services:
           type: pserv
           property: port
       - key: REDIS_URL
-        value: redis://$(REDIS_HOST):$(REDIS_PORT)/0
+        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-redis
     type: pserv
     env: docker
     dockerfilePath: ./redis/Dockerfile
-    plan: starter
+    plan: starter  # Puedes usar "free" si lo prefieres
 
 databases:
   - name: airflow-db
-    plan: starter
+    databaseType: postgres
+    plan: standard
