@@ -69,5 +69,4 @@ services:
 
 databases:
   - name: airflow-db
-    databaseType: postgres
     plan: starter
