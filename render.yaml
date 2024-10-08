@@ -13,9 +13,7 @@ services:
       - key: AIRFLOW_ADMIN_PASSWORD
         sync: false
       - key: AIRFLOW_COMMAND
-        value: "airflow webserver"
-      - key: AIRFLOW__WEBSERVER__WEB_SERVER_PORT
-        value: "$PORT"
+        value: "airflow webserver --port \$PORT"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
@@ -45,19 +43,26 @@ services:
         value: "airflow scheduler"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: airflow-db
+          property: connectionString
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
           property: connectionString
-      - key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
-      - key: REDIS_URL
+      - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          type: redis
-          property: connectionString
+          type: pserv
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: port
+      - key: REDIS_URL
+        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-worker
     type: worker
@@ -72,23 +77,34 @@ services:
         value: "airflow celery worker"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: airflow-db
+          property: connectionString
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
           property: connectionString
-      - key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
-      - key: REDIS_URL
+      - key: REDIS_HOST
         fromService:
           name: airflow-redis
-          type: redis
-          property: connectionString
+          type: pserv
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: port
+      - key: REDIS_URL
+        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-redis
-    type: redis
+    type: pserv
+    env: docker
+    dockerfilePath: ./redis/Dockerfile
     plan: starter  # Puedes usar "free" si lo prefieres
+    ipAllowList:
+      - source: 0.0.0.0/0
 
 databases:
   - name: airflow-db
