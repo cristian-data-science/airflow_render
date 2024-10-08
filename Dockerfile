@@ -1,28 +1,19 @@
 FROM apache/airflow:2.6.1
 
-# Establecer el directorio de trabajo
-WORKDIR /opt/airflow
-
-# Copiar y instalar dependencias
+# Instalar dependencias
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar DAGs
-COPY dags/ ./dags/
+COPY dags/ /opt/airflow/dags/
 
-# Establecer el punto de entrada
+# Establecer el directorio de trabajo
+WORKDIR /opt/airflow
+
+# Usar el punto de entrada predeterminado de Airflow
 ENTRYPOINT ["/entrypoint"]
 
-# Comando de inicio con depuración
+# Comando de inicio para el servidor web
 CMD ["bash", "-c", "\
-    echo 'AIRFLOW__CORE__SQL_ALCHEMY_CONN: ' $AIRFLOW__CORE__SQL_ALCHEMY_CONN; \
-    echo 'AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ' $AIRFLOW__DATABASE__SQL_ALCHEMY_CONN; \
     airflow db upgrade && \
-    airflow users create \
-        --username \"$AIRFLOW_ADMIN_USER\" \
-        --password \"$AIRFLOW_ADMIN_PASSWORD\" \
-        --firstname Admin \
-        --lastname User \
-        --role Admin \
-        --email admin@example.com || true && \
-    exec $AIRFLOW_COMMAND"]
+    exec airflow webserver --port $PORT"]
