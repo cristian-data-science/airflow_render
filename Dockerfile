@@ -17,3 +17,5 @@ ENTRYPOINT ["/entrypoint"]
 CMD ["bash", "-c", "\
     airflow db upgrade && \
     exec airflow webserver --port $PORT"]
+
+ # last test   
