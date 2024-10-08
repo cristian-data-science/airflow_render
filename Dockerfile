@@ -13,7 +13,7 @@ WORKDIR /opt/airflow
 # Usar el punto de entrada predeterminado de Airflow
 ENTRYPOINT ["/entrypoint"]
 
-# Comando de inicio para el servidor web
+# Usar una variable de entorno para especificar el comando, con un valor predeterminado
 CMD ["bash", "-c", "\
     airflow db upgrade && \
-    exec airflow webserver --port $PORT"]
+    exec ${AIRFLOW_COMMAND:-airflow webserver --port $PORT}"]
