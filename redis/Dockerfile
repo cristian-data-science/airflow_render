@@ -5,4 +5,4 @@ FROM redis:6.2.6
 
 
 # Comando para iniciar Redis con el archivo de configuración
-CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]
+CMD ["redis-server"]
