@@ -25,10 +25,7 @@ services:
           name: airflow-db
           property: connectionString
       - key: REDIS_URL
-        fromService:
-          name: airflow-redis
-          type: redis
-          property: connectionString
+        value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-scheduler
     type: worker
@@ -62,7 +59,7 @@ services:
           type: pserv
           property: port
       - key: REDIS_URL
-        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
+        value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-worker
     type: worker
@@ -96,14 +93,17 @@ services:
           type: pserv
           property: port
       - key: REDIS_URL
-        value: "redis://$(REDIS_HOST):$(REDIS_PORT)/0"
+        value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-redis
     type: pserv
     env: docker
     dockerfilePath: ./redis/Dockerfile
     plan: starter  # Puedes usar "free" si lo prefieres
-
+    envVars:
+      - key: REDIS_PASSWORD
+        sync: false
+    dockerCommand: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
 databases:
   - name: airflow-db
