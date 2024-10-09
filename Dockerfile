@@ -16,6 +16,6 @@ ENTRYPOINT ["/entrypoint"]
 # Usar una variable de entorno para especificar el comando, con un valor predeterminado
 CMD ["bash", "-c", "\
     airflow db upgrade && \
-    exec airflow webserver --port 5432"]
+    exec airflow webserver"]
 
  # last test   
