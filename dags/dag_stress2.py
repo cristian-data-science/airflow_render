@@ -10,7 +10,8 @@ default_args = {
     'depends_on_past': False,
     'start_date': datetime(2024, 10, 9),
     'email_on_failure': False,
-    'email_on_retry': False,
+    'email_on_retry': False
+}
 
 
 # Definimos el DAG
