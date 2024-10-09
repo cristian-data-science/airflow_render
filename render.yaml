@@ -103,8 +103,7 @@ services:
     env: docker
     dockerfilePath: ./redis/Dockerfile
     plan: starter  # Puedes usar "free" si lo prefieres
-    ipAllowList:
-      - source: 0.0.0.0/0
+
 
 databases:
   - name: airflow-db
