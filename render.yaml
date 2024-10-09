@@ -98,9 +98,9 @@ services:
   - name: airflow-redis
     type: pserv
     env: docker
-    buildCommand: "docker build -t airflow-redis ."
     dockerfilePath: ./redis/Dockerfile
-    plan: starter  # Puedes usar "free" si lo prefieres
+    buildContextPath: ./redis  # Este es el contexto de construcción
+    plan: starter
     envVars:
       - key: REDIS_PASSWORD
         sync: false
