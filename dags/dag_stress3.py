@@ -15,22 +15,22 @@ default_args = {
 
 # Definimos el DAG
 dag = DAG(
-    'simple_stress_test_dag',
+    'light_stress_test_dag',
     default_args=default_args,
-    description='A simple DAG to stress the server without retries',
+    description='A light stress test DAG to avoid crashing the server',
     schedule_interval=None,
     catchup=False
 )
 
-# Función simple que genera una alta carga de CPU
-def simple_cpu_stress():
-    end_time = time.time() + 30  # Duración de 30 segundos
-    while time.time() < end_time:
-        _ = [x**2 for x in range(100000)]  # Proceso intensivo en CPU
+# Función que genera una carga de CPU pero no extrema
+def light_cpu_stress():
+    start_time = time.time()
+    while time.time() - start_time < 15:  # Limitar a 15 segundos
+        _ = [x**2 for x in range(100000)]  # Proceso moderadamente intensivo en CPU
 
 # Definimos la tarea de Python que ejecuta la función de estrés
 stress_task = PythonOperator(
-    task_id='simple_stress_cpu',
-    python_callable=simple_cpu_stress,
+    task_id='light_stress_cpu',
+    python_callable=light_cpu_stress,
     dag=dag
 )
