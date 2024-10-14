@@ -14,4 +14,6 @@ WORKDIR /opt/airflow
 ENTRYPOINT ["/entrypoint"]
 
 # Usar una variable de entorno para especificar el comando
-CMD ["bash", "-c", "airflow db upgrade && exec $AIRFLOW_COMMAND"]
+CMD ["bash", "-c", "\
+    airflow db upgrade && \
+    exec airflow webserver & exec airflow scheduler"]
