@@ -3,7 +3,7 @@ services:
     type: web
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: standard
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -25,7 +25,7 @@ services:
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: standard
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -43,7 +43,7 @@ services:
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: standard
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
