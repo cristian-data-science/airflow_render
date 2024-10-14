@@ -21,7 +21,7 @@ services:
       - key: AIRFLOW__WEBSERVER__RBAC
         value: "True"
       - key: AIRFLOW_COMMAND
-        value: "airflow webserver --port $PORT"
+        value: "airflow webserver"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "LocalExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
