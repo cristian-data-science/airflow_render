@@ -3,7 +3,7 @@ services:
     type: web
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: standard
+    plan: standard  # Aumentado a standard
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -12,6 +12,14 @@ services:
         sync: false
       - key: AIRFLOW_ADMIN_PASSWORD
         sync: false
+      - key: AIRFLOW__WEBSERVER__AUTHENTICATE
+        value: "True"
+      - key: AIRFLOW__WEBSERVER__AUTH_BACKEND
+        value: "airflow.contrib.auth.backends.password_auth"
+      - key: AIRFLOW__WEBSERVER__SECRET_KEY
+        sync: false
+      - key: AIRFLOW__WEBSERVER__RBAC
+        value: "True"
       - key: AIRFLOW_COMMAND
         value: "airflow webserver --port $PORT"
       - key: AIRFLOW__CORE__EXECUTOR
@@ -25,31 +33,13 @@ services:
     type: worker
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: standard
+    plan: standard  # Aumentado a standard
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
         sync: false
       - key: AIRFLOW_COMMAND
         value: "airflow scheduler"
-      - key: AIRFLOW__CORE__EXECUTOR
-        value: "LocalExecutor"
-      - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
-
-  - name: airflow-worker
-    type: worker
-    env: docker
-    dockerfilePath: ./Dockerfile
-    plan: standard
-    autoDeploy: true
-    envVars:
-      - key: AIRFLOW__CORE__FERNET_KEY
-        sync: false
-      - key: AIRFLOW_COMMAND
-        value: "airflow tasks run"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "LocalExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
