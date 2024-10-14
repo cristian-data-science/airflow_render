@@ -13,7 +13,5 @@ WORKDIR /opt/airflow
 # Usar el punto de entrada predeterminado de Airflow
 ENTRYPOINT ["/entrypoint"]
 
-# Comando para ejecutar Webserver y Scheduler
-CMD ["bash", "-c", "\
-    airflow db upgrade && \
-    exec airflow webserver & exec airflow scheduler"]
+# Usar una variable de entorno para especificar el comando
+CMD ["bash", "-c", "airflow db upgrade && exec $AIRFLOW_COMMAND"]
