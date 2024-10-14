@@ -1,9 +1,9 @@
 services:
-  - name: airflow-webserver
+  - name: airflow
     type: web
     env: docker
     dockerfilePath: ./Dockerfile
-    plan: standard  # Aumentado a standard
+    plan: standard
     autoDeploy: true
     envVars:
       - key: AIRFLOW__CORE__FERNET_KEY
@@ -20,33 +20,12 @@ services:
         sync: false
       - key: AIRFLOW__WEBSERVER__RBAC
         value: "True"
-      - key: AIRFLOW_COMMAND
-        value: "airflow webserver"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "LocalExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
           property: connectionString
-
-  - name: airflow-scheduler
-    type: worker
-    env: docker
-    dockerfilePath: ./Dockerfile
-    plan: standard  # Aumentado a standard
-    autoDeploy: true
-    envVars:
-      - key: AIRFLOW__CORE__FERNET_KEY
-        sync: false
-      - key: AIRFLOW_COMMAND
-        value: "airflow scheduler"
-      - key: AIRFLOW__CORE__EXECUTOR
-        value: "LocalExecutor"
-      - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
-
 databases:
   - name: airflow-db
     plan: standard
