@@ -1,26 +1,24 @@
 FROM apache/airflow:2.6.1
 
-# Cambiar a usuario root para tener permisos administrativos
+# Cambiar a usuario root para operaciones privilegiadas
 USER root
 
-# Copiar requisitos y instalarlos
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copiar DAGs
-COPY dags/ /opt/airflow/dags/
-
-# Copiar script de inicio
+# Copiar script de entrada y cambiar permisos
 COPY entrypoint.sh /entrypoint.sh
-
-# Cambiar permisos del script de inicio
 RUN chmod +x /entrypoint.sh
+
+# Cambiar a usuario airflow para instalar dependencias
+USER airflow
 
 # Establecer el directorio de trabajo
 WORKDIR /opt/airflow
 
-# Volver al usuario airflow
-USER airflow
+# Copiar y instalar requisitos como usuario airflow
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar DAGs como usuario airflow
+COPY dags/ /opt/airflow/dags/
 
 # Usar el punto de entrada personalizado
 ENTRYPOINT ["/entrypoint.sh"]
