@@ -15,7 +15,7 @@ services:
       - key: AIRFLOW_COMMAND
         value: "airflow webserver --port $PORT"
       - key: AIRFLOW__CORE__EXECUTOR
-        value: "CeleryExecutor"
+        value: "LocalExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
@@ -57,7 +57,7 @@ services:
       - key: AIRFLOW_COMMAND
         value: "airflow scheduler"
       - key: AIRFLOW__CORE__EXECUTOR
-        value: "CeleryExecutor"
+        value: "LocalExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
@@ -95,7 +95,7 @@ services:
       - key: AIRFLOW_COMMAND
         value: "airflow celery worker"
       - key: AIRFLOW__CORE__EXECUTOR
-        value: "CeleryExecutor"
+        value: "LocalExecutor"
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
