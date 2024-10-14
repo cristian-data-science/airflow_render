@@ -20,12 +20,30 @@ services:
         fromDatabase:
           name: airflow-db
           property: connectionString
-      - key: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
-      - key: REDIS_URL
+      # Agregar REDIS_HOST y REDIS_PORT
+      - key: REDIS_HOST
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: port
+      - key: REDIS_PASSWORD
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: password
+      # Configurar BROKER_URL y RESULT_BACKEND
+      - key: AIRFLOW__CELERY__BROKER_URL
         value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
+      - key: AIRFLOW__CELERY__RESULT_BACKEND
+        value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/1"
+      # Eliminar REDIS_URL si no es necesario
+      # - key: REDIS_URL
+      #   value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
 
   - name: airflow-scheduler
     type: worker
@@ -40,10 +58,6 @@ services:
         value: "airflow scheduler"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
@@ -58,8 +72,16 @@ services:
           name: airflow-redis
           type: pserv
           property: port
-      - key: REDIS_URL
+      - key: REDIS_PASSWORD
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: password
+      # Configurar BROKER_URL y RESULT_BACKEND
+      - key: AIRFLOW__CELERY__BROKER_URL
         value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
+      - key: AIRFLOW__CELERY__RESULT_BACKEND
+        value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/1"
 
   - name: airflow-worker
     type: worker
@@ -74,10 +96,6 @@ services:
         value: "airflow celery worker"
       - key: AIRFLOW__CORE__EXECUTOR
         value: "CeleryExecutor"
-      - key: DATABASE_URL
-        fromDatabase:
-          name: airflow-db
-          property: connectionString
       - key: AIRFLOW__CORE__SQL_ALCHEMY_CONN
         fromDatabase:
           name: airflow-db
@@ -92,19 +110,28 @@ services:
           name: airflow-redis
           type: pserv
           property: port
-      - key: REDIS_URL
+      - key: REDIS_PASSWORD
+        fromService:
+          name: airflow-redis
+          type: pserv
+          property: password
+      # Configurar BROKER_URL y RESULT_BACKEND
+      - key: AIRFLOW__CELERY__BROKER_URL
         value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/0"
+      - key: AIRFLOW__CELERY__RESULT_BACKEND
+        value: "redis://:$REDIS_PASSWORD@$(REDIS_HOST):$(REDIS_PORT)/1"
 
   - name: airflow-redis
     type: pserv
+    plan: starter
     env: docker
     dockerfilePath: ./redis/Dockerfile
-    buildContextPath: ./redis  # Este es el contexto de construcción
-    plan: starter
+    buildContextPath: ./redis
     envVars:
       - key: REDIS_PASSWORD
         sync: false
-    dockerCommand: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    # Asegúrate de que Redis use la contraseña establecida
+    dockerCommand: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "$REDIS_PASSWORD"]
 
 databases:
   - name: airflow-db
