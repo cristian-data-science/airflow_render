@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Ejecutar la actualización de la base de datos
 airflow db upgrade
 
@@ -12,8 +11,5 @@ airflow users create \
   --password "$AIRFLOW_ADMIN_PASSWORD" \
   --email "admin@example.com" || true
 
-# Iniciar el scheduler en segundo plano
-airflow scheduler &
-
-# Iniciar el webserver en primer plano
-exec airflow webserver
+# Ejecutar el comando especificado
+exec "$@"
