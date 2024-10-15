@@ -1,4 +1,4 @@
-FROM apache/airflow:2.6.1
+FROM apache/airflow:2.7.3
 
 # Cambiar a usuario root para operaciones privilegiadas
 USER root
