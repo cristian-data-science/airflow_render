@@ -22,6 +22,3 @@ COPY dags/ /opt/airflow/dags/
 
 # Usar el punto de entrada personalizado
 ENTRYPOINT ["/entrypoint.sh"]
-
-# Usar una variable de entorno para especificar el comando
-CMD ["bash", "-c", "exec $AIRFLOW_COMMAND"]

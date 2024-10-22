@@ -11,5 +11,11 @@ airflow users create \
   --password "$AIRFLOW_ADMIN_PASSWORD" \
   --email "admin@example.com" || true
 
+# Iniciar el scheduler en segundo plano
+airflow scheduler &
+
+# Ejecutar el webserver en primer plano
+exec airflow webserver
+
 # Ejecutar el comando especificado
 exec "$@"
