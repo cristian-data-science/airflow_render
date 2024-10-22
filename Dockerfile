@@ -7,6 +7,9 @@ USER root
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Crear directorio de logs y asignar permisos
+RUN mkdir -p /opt/airflow/logs && chown -R airflow: /opt/airflow/logs
+
 # Cambiar a usuario airflow para instalar dependencias
 USER airflow
 
@@ -22,3 +25,6 @@ COPY dags/ /opt/airflow/dags/
 
 # Usar el punto de entrada personalizado
 ENTRYPOINT ["/entrypoint.sh"]
+
+# Usar una variable de entorno para especificar el comando
+CMD ["bash", "-c", "exec $AIRFLOW_COMMAND"]

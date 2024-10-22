@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ejecutar la actualización de la base de datos
+# Actualizar la base de datos
 airflow db upgrade
 
 # Crear usuario admin si no existe
@@ -16,6 +16,3 @@ airflow scheduler &
 
 # Ejecutar el webserver en primer plano
 exec airflow webserver
-
-# Ejecutar el comando especificado
-exec "$@"
