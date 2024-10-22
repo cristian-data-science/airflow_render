@@ -28,6 +28,10 @@ services:
           property: connectionString
       - key: AIRFLOW__LOGGING__REMOTE_LOGGING
         value: "False"
+      - key: AIRFLOW__LOGGING__TASK_LOG_READER
+        value: "file.task"
+      - key: AIRFLOW__LOGGING__LOGGING_CONFIG_CLASS
+        value: ""
       - key: AIRFLOW__CORE__HOSTNAME_CALLABLE
         value: "socket.gethostname"
       - key: AIRFLOW__WEBSERVER__BASE_URL
