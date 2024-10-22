@@ -26,6 +26,8 @@ services:
         fromDatabase:
           name: airflow-db
           property: connectionString
+      - key: AIRFLOW__LOGGING__REMOTE_LOGGING
+        value: "False"
 
 databases:
   - name: airflow-db
