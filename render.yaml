@@ -28,6 +28,12 @@ services:
           property: connectionString
       - key: AIRFLOW__LOGGING__REMOTE_LOGGING
         value: "False"
+      - key: AIRFLOW__CORE__HOSTNAME_CALLABLE
+        value: "socket.gethostname"
+      - key: AIRFLOW__WEBSERVER__BASE_URL
+        value: "http://localhost:8080"
+      - key: AIRFLOW__LOGGING__BASE_LOG_FOLDER
+        value: "/opt/airflow/logs"
 
 databases:
   - name: airflow-db
